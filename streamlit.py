@@ -6,7 +6,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 # Configuración inicial
 # =========================
 st.set_page_config(page_title="Chatbot Básico", page_icon="🤖")
-st.title("🤖Chatbot - con LangChain")
+st.title("🤖 Chatbot - con LangChain")
 st.markdown("Este es un *chatbot de ejemplo* construido con LangChain + Streamlit.")
 
 # =========================
