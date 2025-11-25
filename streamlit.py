@@ -6,13 +6,13 @@ from langchain_core.messages import AIMessage, HumanMessage
 # Configuración inicial
 # =========================
 st.set_page_config(page_title="Chatbot Básico", page_icon="🤖")
-st.title("🤖 Chatbot - con LangChain")
+st.title("Chatbot - con LangChain")
 st.markdown("Este es un *chatbot de ejemplo* construido con LangChain + Streamlit.")
 
 # =========================
 # Menú lateral (configuración)
 # =========================
-st.sidebar.title("⚙️ Configuración del modelo")
+st.sidebar.title("Configuración del modelo")
 
 # Slider para la temperatura
 temperatura = st.sidebar.slider(
@@ -30,7 +30,7 @@ modelo_seleccionado = st.sidebar.selectbox(
 )
 
 # Botón para limpiar la conversación
-if st.sidebar.button("🧹 Limpiar conversación"):
+if st.sidebar.button("Limpiar conversación"):
     st.session_state.mensajes = []
 
 # =========================
