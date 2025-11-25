@@ -14,6 +14,27 @@ st.markdown("Este es un *chatbot de ejemplo* construido con LangChain + Streamli
 # =========================
 st.sidebar.title("Configuración del modelo")
 
+# --- Tema de la interfaz ---
+st.sidebar.subheader("🎨 Tema")
+
+tema = st.sidebar.radio(
+    "Modo de color",
+    ["Normal", "Pastel azul/rosa"],
+)
+
+# Aplicar estilo según el tema
+if tema == "Pastel azul/rosa":
+    st.markdown(
+        """
+        <style>
+        .stApp {
+            background: linear-gradient(135deg, #e3f2fd 0%, #fce4ec 100%);
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
 # Slider para la temperatura
 temperatura = st.sidebar.slider(
     "Temperatura",
