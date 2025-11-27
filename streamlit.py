@@ -10,11 +10,8 @@ st.title("🤖 Chatbot - con LangChain")
 st.markdown("Este es un *chatbot de ejemplo* construido con LangChain + Streamlit.")
 
 # =========================
-# Menú lateral (configuración)
+# Tema pastel fijo
 # =========================
-st.sidebar.title("Configuración del modelo")
-
-# --- Tema de la interfaz ---
 st.markdown(
     """
     <style>
@@ -26,14 +23,27 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Slider para la temperatura
-temperatura = st.sidebar.slider(
-    "Temperatura",
-    min_value=0.0,
-    max_value=1.0,
-    value=0.7,
-    step=0.1,
+# =========================
+# Menú lateral (configuración)
+# =========================
+st.sidebar.title("Configuración del modelo")
+
+# Selector de "personalidad" en vez de temperatura numérica
+estilo_respuesta = st.sidebar.radio(
+    "Estilo de respuesta",
+    ["Muy técnica", "Equilibrada", "Creativa"],
 )
+
+# Mapeo de estilo -> temperatura
+if estilo_respuesta == "Muy técnica":
+    temperatura = 0.1
+elif estilo_respuesta == "Equilibrada":
+    temperatura = 0.5
+else:  # "Creativa"
+    temperatura = 0.9
+
+# Opcional: mostrar la temperatura real como info
+st.sidebar.caption(f"Temperatura real: {temperatura}")
 
 # Select para elegir el modelo
 modelo_seleccionado = st.sidebar.selectbox(
