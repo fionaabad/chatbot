@@ -28,35 +28,55 @@ st.markdown(
 # =========================
 st.sidebar.title("Configuración del modelo")
 
-# Selector de "personalidad" en vez de temperatura numérica
-estilo_respuesta = st.sidebar.radio(
+# -------- PERSONALIDAD CON SLIDER --------
+
+opciones = [
+    "Muy técnica",
+    "Técnica",
+    "Equilibrada",
+    "Creativa",
+    "Muy creativa"
+]
+
+# Slider solo muestra texto, no números
+indice_personalidad = st.sidebar.slider(
     "Estilo de respuesta",
-    ["Muy técnica", "Equilibrada", "Creativa"],
+    min_value=0,
+    max_value=len(opciones)-1,
+    value=2,  # Equilibrada
+    step=1,
+    format="%d"  # no importa el número, lo ocultamos abajo
 )
 
-# Mapeo de estilo -> temperatura
-if estilo_respuesta == "Muy técnica":
-    temperatura = 0.1
-elif estilo_respuesta == "Equilibrada":
-    temperatura = 0.5
-else:  # "Creativa"
-    temperatura = 0.9
+estilo_respuesta = opciones[indice_personalidad]
 
-# Opcional: mostrar la temperatura real como info
+# Mapeo estilo → temperatura real
+mapa_temperatura = {
+    "Muy técnica": 0.1,
+    "Técnica": 0.3,
+    "Equilibrada": 0.5,
+    "Creativa": 0.7,
+    "Muy creativa": 0.9
+}
+
+temperatura = mapa_temperatura[estilo_respuesta]
+
+# Mostrar info bonita
+st.sidebar.markdown(f"🧠 **Estilo actual:** {estilo_respuesta}")
 st.sidebar.caption(f"Temperatura real: {temperatura}")
 
-# Select para elegir el modelo
+# -------- SELECTOR DE MODELO --------
 modelo_seleccionado = st.sidebar.selectbox(
     "Modelo",
     ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-1.5-pro"],
 )
 
-# Botón para limpiar la conversación
+# -------- LIMPIAR CONVERSACIÓN --------
 if st.sidebar.button("Limpiar conversación"):
     st.session_state.mensajes = []
 
 # =========================
-# Crear el modelo de chat con la config elegida
+# Crear modelo de chat con la config elegida
 # =========================
 chat_model = ChatGoogleGenerativeAI(
     model=modelo_seleccionado,
@@ -69,7 +89,6 @@ chat_model = ChatGoogleGenerativeAI(
 if "mensajes" not in st.session_state:
     st.session_state.mensajes = []
 
-# Mostrar historial ya guardado
 for msg in st.session_state.mensajes:
     role = "assistant" if isinstance(msg, AIMessage) else "user"
     with st.chat_message(role):
@@ -81,15 +100,12 @@ for msg in st.session_state.mensajes:
 pregunta = st.chat_input("Escribe tu mensaje:")
 
 if pregunta:
-    # Mostrar y guardar mensaje del usuario
     with st.chat_message("user"):
         st.markdown(pregunta)
     st.session_state.mensajes.append(HumanMessage(content=pregunta))
 
-    # Llamar al modelo con todo el historial
     respuesta = chat_model.invoke(st.session_state.mensajes)
 
-    # Mostrar y guardar respuesta del asistente
     with st.chat_message("assistant"):
         st.markdown(respuesta.content)
     st.session_state.mensajes.append(respuesta)
