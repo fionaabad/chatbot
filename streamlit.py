@@ -2,14 +2,10 @@ import streamlit as st
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import AIMessage, HumanMessage
 
-# =========================
 # Configuración inicial
-# =========================
 st.set_page_config(page_title="Chatbot", page_icon= '🕊️')
 
-# =========================
-# ESTILOS ESTÉTICOS (pastel + animaciones + botones + input + sidebar)
-# =========================
+# wstilos esteticos
 st.markdown("""
 <style>
 
@@ -83,20 +79,16 @@ button[kind="secondary"] {
 </style>
 """, unsafe_allow_html=True)
 
-# =========================
-# Cabecera
-# =========================
+# cabecera
 st.markdown("<div class='header_box'>AURORA — Asistente Conversacional</div>", unsafe_allow_html=True)
 st.write("")
 st.markdown("Bienvenida a Aurora, un asistente conversacional personalizable. Ajusta su estilo desde el panel lateral y comienza a conversar.")
 
-# =========================
-# Menú lateral — Configuración
-# =========================
+# menu lateral - configuración
 st.sidebar.title("Configuración del modelo")
 st.sidebar.markdown("Responde a estas preguntas para ajustar cómo se comporta el asistente:")
 
-# 1. Cómo quieres que suene la respuesta
+# 1. como quieres que suene la respuesta
 st.sidebar.subheader("1. ¿Cómo quieres que suene la respuesta?")
 
 opciones_estilo = [
@@ -130,7 +122,7 @@ temperatura = mapa_temperatura[estilo_respuesta]
 st.sidebar.markdown(f"- Estilo seleccionado: **{estilo_respuesta}**")
 st.sidebar.caption(f"Temperatura interna: {temperatura}")
 
-# 2. Qué modelo quieres usar
+# 2. que modelo quieres usar
 st.sidebar.subheader("2. ¿Qué modelo quieres usar?")
 
 modelo_seleccionado = st.sidebar.selectbox(
@@ -138,7 +130,7 @@ modelo_seleccionado = st.sidebar.selectbox(
     ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-1.5-pro"],
 )
 
-# 3. Qué rol quieres que tenga
+# 3. qie rol quieres que tenga
 st.sidebar.subheader("3. ¿Qué tipo de personalidad quieres que tenga?")
 
 personalidad = st.sidebar.selectbox(
@@ -146,7 +138,7 @@ personalidad = st.sidebar.selectbox(
     ["Normal", "Profesor paciente", "Comediante", "Experto formal", "Explica como si tuviera 5 años"],
 )
 
-# 4. Opciones adicionales
+# 4. opciones adicionales
 st.sidebar.subheader("4. Opciones adicionales")
 
 modo_explicativo = st.sidebar.checkbox("Quiero que explique paso a paso y con detalle")
@@ -154,22 +146,18 @@ modo_explicativo = st.sidebar.checkbox("Quiero que explique paso a paso y con de
 if st.sidebar.button("Limpiar conversación"):
     st.session_state.mensajes = []
 
-# Mostrar info arriba
+# mostrar info arriba
 st.caption(
     f"Modelo activo: {modelo_seleccionado} · Estilo: {estilo_respuesta} · Personalidad: {personalidad}"
 )
 
-# =========================
-# Crear modelo
-# =========================
+# crear modelo
 chat_model = ChatGoogleGenerativeAI(
     model=modelo_seleccionado,
     temperature=temperatura,
 )
 
-# =========================
-# Historial
-# =========================
+# historial
 if "mensajes" not in st.session_state:
     st.session_state.mensajes = []
 
@@ -180,13 +168,11 @@ for msg in st.session_state.mensajes:
     with st.chat_message(role):
         st.markdown(f"<div class='{css_class}'>{msg.content}</div>", unsafe_allow_html=True)
 
-# =========================
-# Input del usuario
-# =========================
+# input del usuario
 pregunta = st.chat_input("Escribe tu mensaje")
 
 if pregunta:
-    # Prefijos de personalidad y modo explicativo
+    # prefijos de personalidad y modo explicativo
     prefijo = ""
 
     if personalidad == "Profesor paciente":
@@ -203,14 +189,14 @@ if pregunta:
 
     contenido_para_modelo = prefijo + pregunta
 
-    # Mostrar mensaje usuario
+    # mostrar mensaje usuario
     with st.chat_message("user"):
         st.markdown(f"<div class='user_msg'>{pregunta}</div>", unsafe_allow_html=True)
 
-    # Guardar en historial (con el prefijo, para que el modelo lo use)
+    # guardar en historial (con el prefijo, para que el modelo lo use)
     st.session_state.mensajes.append(HumanMessage(content=contenido_para_modelo))
 
-    # Respuesta IA
+    # respuesta IA
     respuesta = chat_model.invoke(st.session_state.mensajes)
 
     with st.chat_message("assistant"):
