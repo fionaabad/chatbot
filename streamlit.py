@@ -5,7 +5,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 # =========================
 # Configuración inicial
 # =========================
-st.set_page_config(page_title="Chatbot", page_icon=🜁)
+st.set_page_config(page_title="Chatbot", page_icon= '🕊️')
 
 # =========================
 # ESTILOS ESTÉTICOS (pastel + animaciones + botones + input + sidebar)
