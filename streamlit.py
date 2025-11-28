@@ -5,7 +5,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 # =========================
 # Configuración inicial
 # =========================
-st.set_page_config(page_title="Chatbot Pastel", page_icon=None)
+st.set_page_config(page_title="Chatbot", page_icon='🜁')
 
 # =========================
 # ESTILOS ESTÉTICOS (pastel + animaciones + botones + input + sidebar)
@@ -86,9 +86,9 @@ button[kind="secondary"] {
 # =========================
 # Cabecera
 # =========================
-st.markdown("<div class='header_box'>Chatbot pastel con LangChain</div>", unsafe_allow_html=True)
+st.markdown("<div class='header_box'>Aurora — Asistente Conversacional</div>", unsafe_allow_html=True)
 st.write("")
-st.markdown("Este es un chatbot de ejemplo construido con LangChain y Streamlit, con opciones de configuración en el lateral.")
+st.markdown("Bienvenida a Aurora, un asistente conversacional personalizable. Ajusta su estilo desde el panel lateral y comienza a conversar.")
 
 # =========================
 # Menú lateral — Configuración
