@@ -5,7 +5,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 # =========================
 # Configuración inicial
 # =========================
-st.set_page_config(page_title="Chatbot", page_icon='🜁')
+st.set_page_config(page_title="Chatbot", page_icon=🜁)
 
 # =========================
 # ESTILOS ESTÉTICOS (pastel + animaciones + botones + input + sidebar)
@@ -86,7 +86,7 @@ button[kind="secondary"] {
 # =========================
 # Cabecera
 # =========================
-st.markdown("<div class='header_box'>Aurora — Asistente Conversacional</div>", unsafe_allow_html=True)
+st.markdown("<div class='header_box'>AURORA — Asistente Conversacional</div>", unsafe_allow_html=True)
 st.write("")
 st.markdown("Bienvenida a Aurora, un asistente conversacional personalizable. Ajusta su estilo desde el panel lateral y comienza a conversar.")
 
