@@ -5,7 +5,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 # =========================
 # Configuración inicial
 # =========================
-st.set_page_config(page_title="Chatbot Pastel", page_icon="💖")
+st.set_page_config(page_title="Chatbot Pastel", page_icon=None)
 
 # =========================
 # ESTILOS ESTÉTICOS (pastel + animaciones + botones + input + sidebar)
@@ -68,7 +68,7 @@ button[kind="secondary"] {
     border: none !important;
 }
 
-/* Cabecera bonita */
+/* Cabecera */
 .header_box {
     padding: 18px;
     border-radius: 15px;
@@ -83,20 +83,22 @@ button[kind="secondary"] {
 </style>
 """, unsafe_allow_html=True)
 
-
 # =========================
 # Cabecera
 # =========================
-st.markdown("<div class='header_box'>✨ Bienvenida a tu Chatbot Pastel ✨</div>", unsafe_allow_html=True)
+st.markdown("<div class='header_box'>Chatbot pastel con LangChain</div>", unsafe_allow_html=True)
 st.write("")
-
+st.markdown("Este es un chatbot de ejemplo construido con LangChain y Streamlit, con opciones de configuración en el lateral.")
 
 # =========================
 # Menú lateral — Configuración
 # =========================
-st.sidebar.title("⚙️ Configuración del modelo")
+st.sidebar.title("Configuración del modelo")
+st.sidebar.markdown("Responde a estas preguntas para ajustar cómo se comporta el asistente:")
 
-# Estilo de respuesta (temperatura)
+# 1. Cómo quieres que suene la respuesta
+st.sidebar.subheader("1. ¿Cómo quieres que suene la respuesta?")
+
 opciones_estilo = [
     "Muy técnica",
     "Técnica",
@@ -106,7 +108,7 @@ opciones_estilo = [
 ]
 
 indice_personalidad = st.sidebar.slider(
-    "🎨 Estilo de respuesta",
+    "Estilo de respuesta",
     min_value=0,
     max_value=len(opciones_estilo) - 1,
     value=2,
@@ -125,31 +127,37 @@ mapa_temperatura = {
 
 temperatura = mapa_temperatura[estilo_respuesta]
 
-st.sidebar.markdown(f"🧠 **Estilo:** {estilo_respuesta}")
-st.sidebar.caption(f"Temperatura real: {temperatura}")
+st.sidebar.markdown(f"- Estilo seleccionado: **{estilo_respuesta}**")
+st.sidebar.caption(f"Temperatura interna: {temperatura}")
 
-# Selector de modelo
+# 2. Qué modelo quieres usar
+st.sidebar.subheader("2. ¿Qué modelo quieres usar?")
+
 modelo_seleccionado = st.sidebar.selectbox(
-    "🤖 Modelo",
+    "Selecciona el modelo",
     ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-1.5-pro"],
 )
 
-# Modo explicación paso a paso
-modo_explicativo = st.sidebar.checkbox("📘 Modo explicación paso a paso")
+# 3. Qué rol quieres que tenga
+st.sidebar.subheader("3. ¿Qué tipo de personalidad quieres que tenga?")
 
-# Personalidad
 personalidad = st.sidebar.selectbox(
-    "🎭 Personalidad del asistente",
+    "Elige una personalidad",
     ["Normal", "Profesor paciente", "Comediante", "Experto formal", "Explica como si tuviera 5 años"],
 )
 
-# Botón limpiar
-if st.sidebar.button("🧹 Limpiar conversación"):
+# 4. Opciones adicionales
+st.sidebar.subheader("4. Opciones adicionales")
+
+modo_explicativo = st.sidebar.checkbox("Quiero que explique paso a paso y con detalle")
+
+if st.sidebar.button("Limpiar conversación"):
     st.session_state.mensajes = []
 
 # Mostrar info arriba
-st.caption(f"**Modelo activo:** {modelo_seleccionado} · **Estilo:** {estilo_respuesta} · **Personalidad:** {personalidad}")
-
+st.caption(
+    f"Modelo activo: {modelo_seleccionado} · Estilo: {estilo_respuesta} · Personalidad: {personalidad}"
+)
 
 # =========================
 # Crear modelo
@@ -158,7 +166,6 @@ chat_model = ChatGoogleGenerativeAI(
     model=modelo_seleccionado,
     temperature=temperatura,
 )
-
 
 # =========================
 # Historial
@@ -173,27 +180,26 @@ for msg in st.session_state.mensajes:
     with st.chat_message(role):
         st.markdown(f"<div class='{css_class}'>{msg.content}</div>", unsafe_allow_html=True)
 
-
 # =========================
 # Input del usuario
 # =========================
-pregunta = st.chat_input("Escribe tu mensaje ✨")
+pregunta = st.chat_input("Escribe tu mensaje")
 
 if pregunta:
-    # Prefijos de personalidad
+    # Prefijos de personalidad y modo explicativo
     prefijo = ""
 
     if personalidad == "Profesor paciente":
         prefijo += "Responde de manera clara y pedagógica, como un profesor paciente. "
     elif personalidad == "Comediante":
-        prefijo += "Responde con humor y chistes sin perder utilidad. "
+        prefijo += "Responde con humor y comentarios divertidos, sin dejar de ser útil. "
     elif personalidad == "Experto formal":
-        prefijo += "Responde con tono serio y profesional. "
+        prefijo += "Responde con un tono serio, preciso y profesional. "
     elif personalidad == "Explica como si tuviera 5 años":
-        prefijo += "Explícalo con palabras muy simples, como a una niña de 5 años. "
+        prefijo += "Explica con palabras muy sencillas, como si hablaras con una niña de 5 años. "
 
     if modo_explicativo:
-        prefijo += "Explica paso a paso y con mucho detalle. "
+        prefijo += "Explica paso a paso y con bastante detalle. "
 
     contenido_para_modelo = prefijo + pregunta
 
@@ -201,7 +207,7 @@ if pregunta:
     with st.chat_message("user"):
         st.markdown(f"<div class='user_msg'>{pregunta}</div>", unsafe_allow_html=True)
 
-    # Guardar
+    # Guardar en historial (con el prefijo, para que el modelo lo use)
     st.session_state.mensajes.append(HumanMessage(content=contenido_para_modelo))
 
     # Respuesta IA
